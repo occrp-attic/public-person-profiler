@@ -1,0 +1,82 @@
+﻿@{
+    var uniqueId = DateTime.Now.Ticks;
+}
+<div class="result col-xs-12" id="quinceResult@(uniqueId)">
+    <input type="hidden" class="unique-id" value="@uniqueId">
+    <div class="table-scrollable">
+        <table class="table table-hover" id="quinceTable@(uniqueId)">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Entities
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+              
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script id="" class="actions-template" type="text/x-handlebars-template">
+        <a href="@Url.Action("AddRelation", "Puper", new { parentId = uniqueId})" class="btn btn-sm quince-link green" data-target="modal" data-title="Add new relation">
+            <i class="fa fa-plus"></i> Add
+        </a>
+        <button class="btn btn-default btn-sm quince-close">Close</button>
+    </script>
+    <script>
+    $(document).ready(function () {
+        var container = $("#quinceResult@(uniqueId)");
+        var calculateHeight = function () {
+            var height = container.parents(".quince-body").height();
+            var bodyHeight = height - $(".dataTables_scrollHead", container).outerHeight() - $(".dataTables_paginate", container).outerHeight() - 35;
+            return bodyHeight;
+        }
+        $("#quinceTable@(uniqueId)").DataTable({
+            "ordering": true,
+            "lengthChange": false,
+            "info": false,
+            "searching": false,
+            "scrollY": calculateHeight,
+            "scrollCollapse": true,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "@Url.Action("GetRelations", "Puper")",
+                "type": "POST"
+            },
+            "columns": [
+                {
+                    "data": "Id",
+                    "orderable": true,
+
+                },
+                {
+                    "data": "Type",
+                    "orderable": true,
+                },
+                {
+                    "data": "Entities",
+                    "orderable": true
+                },
+               
+                {
+                    "data": "Id",
+                    "orderable": false,
+                    render: function (data, type, row, meta) {
+                        return ' <a href="@Url.Action("EditRelation", "Puper")/' + data + '?parentId=@(uniqueId)" class="btn btn-xs blue quince-link" data-title="Edit entity ' + row.Name + '" data-target="modal"> <i class="fa fa-edit"></i> Edit </a>' +
+                               ' <a href="@Url.Action("DeleteRelation", "Puper")/' + data + '?parentId=@(uniqueId)" class="btn btn-xs red quince-link" data-title="Delete entity ' + row.Name + '" data-target="modal"><i class="fa fa-close"></i> Delete </a>'
+                        }
+                    }
+                ],
+            });
+        });
+    </script>
+</div>

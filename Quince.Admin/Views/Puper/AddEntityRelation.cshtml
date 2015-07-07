@@ -1,0 +1,89 @@
+﻿@using Quince.Admin.Helpers
+@model Quince.Admin.Core.Models.Entity.AddEntityRelationModel
+@{
+    var uniqueId = DateTime.Now.Ticks;
+    var parentId = Request["parentId"];
+}
+<div class="result col-xs-12" id="quinceResult@(uniqueId)">
+    <input type="hidden" class="unique-id" value="@uniqueId">
+    @using (Html.BeginForm())
+    {
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @if (Model != null)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TypeId, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.DisplayFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-9" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(model => model.Id, Helpers.GetRelationTypes(string.Empty), new { @class = "form-control input-large select2me" })
+                        @Html.ValidationMessageFor(model => model.TypeId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TypeId, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model.TypeId, Helpers.GetRelationTypes(Model != null ? Model.TypeId.ToString() : string.Empty), new { @class = "form-control input-large select2me" })
+                    @Html.ValidationMessageFor(model => model.TypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.OtherEntityId, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model.Id, Helpers.GetRelationTypes(string.Empty), new { @class = "form-control input-large select2me" })
+                    @Html.ValidationMessageFor(model => model.TypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+
+    <script id="" class="actions-template" type="text/x-handlebars-template">
+        <button class="btn btn-sm @(Model!=null?"blue":"green")" id="addEntitySubmit@(uniqueId)">@(Model != null ? "Save" : "Add")</button>
+        <button class="btn btn-default btn-sm quince-close">Cancel</button>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var container = $("#quinceResult@(uniqueId)");
+            var container = $("#quinceResult@(uniqueId)");
+            $('.select2me', container).select2({
+                placeholder: "Select a type",
+                allowClear: true
+            });
+            var options = {
+                beforeSubmit: function () {
+                    debugger;
+                    Quince.messageManager.removeMessages('@uniqueId');
+                },
+                success: function (response) {
+                    Quince.messageManager.processResponse(response, '@uniqueId');
+                    if (response.Success) {
+                        Quince.appManager.closeApp('@uniqueId');
+                        var table = $("#quinceTable@(parentId)");
+                        debugger;
+                        if (table.length > 0) {
+                            table = table.DataTable();
+                            table.ajax.reload();
+                        }
+                    }
+                }
+            };
+            $('form', container).ajaxForm(options);
+            $('#addEntitySubmit@(uniqueId)').click(function () {
+                $('form', container).submit();
+            });
+        });
+    </script>
+</div>

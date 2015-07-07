@@ -1,0 +1,77 @@
+/* here you can put your own css to customize and override the theme */
+
+/***
+Rounded Portlets
+***/
+/*
+.portlet {
+	border-radius: 4px !important;
+}
+
+.portlet .portlet-title {
+	border-radius: 4px 4px 0px 0px !important;
+}
+
+.portlet .portlet-body,
+.portlet .portlet-body .form-actions  {
+	border-radius: 0px 0px 4px 4px !important;
+}
+*/
+body {
+    overflow:hidden;
+}
+.page-header.navbar .page-logo .logo-default {
+  margin: 12px 10px 0 10px;
+  width:160px;
+}
+
+.quince-tab-button {
+    display: inline-block;
+    position: relative;
+    padding-right: 25px;
+}
+
+    .quince-tab-button .close {
+        display: none;
+        width: 25px;
+        height: 25px;
+        text-indent: 0px;
+        text-align: center;
+        background-image: none !important;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .quince-tab-button:hover .close {
+        display: inline-block;
+    }
+
+.page-title {
+      min-height: 43px;
+}
+
+.quince-body {
+    overflow-y:auto;
+}
+.quince-content {
+      padding-bottom: 10px;
+}
+.quince-content .portlet{
+      height:100%;
+}
+.quince-window {
+    display:none;
+}
+
+td.actions {
+    text-align:right;
+}
+
+@media (min-width: 992px) {
+    .page-content-wrapper .page-content {
+       
+         min-height: 60px;
+        
+    }
+}

@@ -1,0 +1,66 @@
+﻿@model Quince.Admin.Core.Models.EntityType.EntityTypeAddEditModel
+@{
+    var uniqueId = DateTime.Now.Ticks;
+    var parentId = Request["parentId"];
+}
+<div class="result col-xs-12" id="quinceResult@(uniqueId)">
+    <input type="hidden" class="unique-id" value="@uniqueId">
+
+    @using (Html.BeginForm())
+    {
+        // @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id);
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+
+    <script id="" class="actions-template" type="text/x-handlebars-template">
+        <button class="btn btn-sm @(Model!=null?"blue":"green")" id="addEntityTypeSubmit@(uniqueId)">@(Model != null ? "Save" : "Add")</button>
+        <button class="btn btn-default btn-sm quince-close">Cancel</button>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var container = $("#quinceResult@(uniqueId)");
+            var options = {
+                beforeSubmit: function () {
+                    debugger;
+                    Quince.messageManager.removeMessages('@uniqueId');
+                },
+                success: function (response) {
+                    Quince.messageManager.processResponse(response, '@uniqueId');
+                    if (response.Success)
+                    {
+                        Quince.appManager.closeApp('@uniqueId');
+                        var table = $("#quinceTable@(parentId)");
+                        debugger;
+                        if (table.length > 0)
+                        {
+                            table = table.DataTable();
+                            table.ajax.reload();
+                        }
+                    }
+                }
+            };
+            $('form', container).ajaxForm(options);
+            $('#addEntityTypeSubmit@(uniqueId)').click(function () {
+                $('form', container).submit();
+            });
+        });
+    </script>
+</div>

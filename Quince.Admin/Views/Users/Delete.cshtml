@@ -1,0 +1,40 @@
+﻿@model Quince.Admin.Core.Models.User.UserModel
+@{
+    var uniqueId = DateTime.Now.Ticks;
+}
+<div class="result col-xs-12" id="quinceResult@(uniqueId)">
+    <input type="hidden" class="unique-id" value="@uniqueId">
+    @using (Html.BeginForm())
+    {
+        @Html.HiddenFor(model => model.Id)
+        <div class="row">
+            <div class="col-xs-12">
+                Are you sure you want to delete user <b>@Model.Email</b>?
+            </div>
+        </div>
+    }
+    <script id="" class="actions-template" type="text/x-handlebars-template">
+        <button class="btn btn-default btn-sm red" id="deleteUserSubmit@(uniqueId)">Delete</button>
+        <button class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var container = $("#quinceResult@(uniqueId)");
+            var options = {
+                beforeSubmit: function () {
+                    Quince.messageManager.removeMessages('@uniqueId');
+                },
+                success: function (response) {
+                    Quince.messageManager.processResponse(response, '@uniqueId');
+                }
+            };
+            $('form', container).ajaxForm(options);
+            $('#deleteUserSubmit@(uniqueId)').click(function () {
+                alert(0);
+                $('form', container).submit();
+            });
+        });
+    </script>
+</div>
+

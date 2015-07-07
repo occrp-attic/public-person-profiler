@@ -1,0 +1,92 @@
+﻿@model Quince.Admin.Core.Models.User.AddUserModel
+@{
+    var uniqueId = DateTime.Now.Ticks;
+    var parentId = Request["parentId"];
+}
+<div class="result col-xs-12" id="quinceResult@(uniqueId)">
+    <input type="hidden" class="unique-id" value="@uniqueId">
+
+    @using (Html.BeginForm())
+    {
+        // @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id);
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.RegisterDate, htmlAttributes: new { @class = "control-label col-md-3 " })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.RegisterDate, new { htmlAttributes = new { @class = "form-control date-picker" } })
+                    @Html.ValidationMessageFor(model => model.RegisterDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Active, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    <div class="checkbox">
+                        @*@Html.EditorFor(model => model.Active)*@
+                        <input type="checkbox" @(Model != null ? Model.Active ? "checked" : string.Empty : string.Empty) value="true" name="Active" class="make-switch switch-large" data-label-icon="fa fa-fullscreen" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
+                        @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    <script id="" class="actions-template" type="text/x-handlebars-template">
+        <button class="btn btn-sm @(Model!=null?"blue":"green")" id="addUserSubmit@(uniqueId)">@(Model != null ? "Save" : "Add")</button>
+        <button class="btn btn-default btn-sm quince-close">Cancel</button>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var container = $("#quinceResult@(uniqueId)");
+            $('.make-switch', container).bootstrapSwitch();
+            $('.date-picker', container).datepicker({
+                format: 'dd/mm/yyyy',
+                orientation: "left",
+                autoclose: true
+            });
+            var options = {
+                beforeSubmit: function () {
+                    debugger;
+                    Quince.messageManager.removeMessages('@uniqueId');
+                },
+                success: function (response) {
+                    Quince.messageManager.processResponse(response, '@uniqueId');
+                    if (response.Success)
+                    {
+                        Quince.appManager.closeApp('@uniqueId');
+                        var table = $("#quinceTable@(parentId)");
+                        if (table.length > 0)
+                        {
+                            table = table.DataTable();
+                            table.ajax.reload();
+                        }
+                    }
+                }
+            };
+            $('form', container).ajaxForm(options);
+            $('#addUserSubmit@(uniqueId)').click(function () {
+                $('form', container).submit();
+            });
+        });
+    </script>
+</div>
