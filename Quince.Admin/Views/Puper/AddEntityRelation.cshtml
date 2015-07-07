@@ -13,10 +13,10 @@
             @if (Model != null)
             {
                 <div class="form-group">
-                    @Html.LabelFor(model => model.TypeId, htmlAttributes: new { @class = "control-label col-md-3" })
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-3" })
                     <div class="col-md-9">
                         @Html.HiddenFor(model => model.Id)
-                        @Html.DisplayFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-9" })
+                        @Html.DisplayFor(model => model.Name)
                     </div>
                 </div>
             }
@@ -26,24 +26,24 @@
                     @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-3" })
                     <div class="col-md-9">
                         @Html.DropDownListFor(model => model.Id, Helpers.GetRelationTypes(string.Empty), new { @class = "form-control input-large select2me" })
-                        @Html.ValidationMessageFor(model => model.TypeId, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
                     </div>
                 </div>
             }
 
             <div class="form-group">
-                @Html.LabelFor(model => model.TypeId, htmlAttributes: new { @class = "control-label col-md-3" })
+                @Html.LabelFor(model => model.RelationTypeId, htmlAttributes: new { @class = "control-label col-md-3" })
                 <div class="col-md-9">
-                    @Html.DropDownListFor(model => model.TypeId, Helpers.GetRelationTypes(Model != null ? Model.TypeId.ToString() : string.Empty), new { @class = "form-control input-large select2me" })
-                    @Html.ValidationMessageFor(model => model.TypeId, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(model => model.RelationTypeId, Helpers.GetRelationTypes(string.Empty), new { @class = "form-control input-large select2me" })
+                    @Html.ValidationMessageFor(model => model.RelationTypeId, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.OtherEntityId, htmlAttributes: new { @class = "control-label col-md-3" })
                 <div class="col-md-9">
-                    @Html.DropDownListFor(model => model.Id, Helpers.GetRelationTypes(string.Empty), new { @class = "form-control input-large select2me" })
-                    @Html.ValidationMessageFor(model => model.TypeId, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(model => model.OtherEntityId, new List<SelectListItem>(), new { @class = "form-control input-large" })
+                    @Html.ValidationMessageFor(model => model.OtherEntityId, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
@@ -62,6 +62,21 @@
                 placeholder: "Select a type",
                 allowClear: true
             });
+            $('#OtherEntityId', container).select2({
+                placeholder: "Select a type",
+                allowClear: true,
+                ajax: {
+                    url: "@Url.Action("GetEntitiesNames", "Puper")",
+                    dataType: 'json',
+                    delay: 250,
+                    type: "POST",
+                    processResults: function (data, page) {
+                        return {
+                            results: data
+                        };
+                    },
+                }
+            });
             var options = {
                 beforeSubmit: function () {
                     debugger;
@@ -72,7 +87,6 @@
                     if (response.Success) {
                         Quince.appManager.closeApp('@uniqueId');
                         var table = $("#quinceTable@(parentId)");
-                        debugger;
                         if (table.length > 0) {
                             table = table.DataTable();
                             table.ajax.reload();

@@ -223,9 +223,25 @@ namespace Quince.Admin.Controllers
         }
         #endregion
 
-        public PartialViewResult AddEntityRelation(int id)
+        public PartialViewResult AddEntityRelation(long id)
         {
-            var entity = 
+            var relationEntity = EntityManager.GetEntityRelationModel(id);
+            return PartialView(relationEntity);
+        }
+        [HttpPost]
+        public async Task<JsonResult> AddEntityRelation(AddEntityRelationModel addEntityRelationModel)
+        {
+            var response = await EntityManager.AddEntityRelation(addEntityRelationModel);
+            return Json(response);
+        }
+
+
+
+        [HttpPost]
+        public JsonResult GetEntitiesNames(string q)
+        {
+            var searchResult = EntityManager.GetEntities(q);
+            return Json(searchResult);
         }
     }
 }

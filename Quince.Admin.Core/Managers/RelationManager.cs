@@ -1,7 +1,6 @@
 ﻿using Quince.Admin.Core.Contexes;
 using Quince.Admin.Core.Contracts;
 using Quince.Admin.Core.Models.DataTables;
-using Quince.Admin.Core.Models.Entity;
 using Quince.Admin.Core.Models.Relation;
 using Quince.Utils.Messages;
 using System;
@@ -48,11 +47,11 @@ namespace Quince.Admin.Core.Managers
                 }
             }
             response.recordsFiltered = data.Count();
-            data = data.Skip(request.start).Take(request.length);
-            var responseData = data.Select(u => new RelationDisplayModel { Id = u.Id, Type = u.Type.Name});
+            data = data.Skip(request.start).Take(request.length).ToList();
+            var responseData = data.Select(u => new RelationDisplayModel { Id = u.Id, Type = u.Type.Name, Entities = u.RelationEntities.Select(re=>re.Entity.Name).ToArray()});
             response.data = responseData;
 
-            response.recordsTotal = context.EntityTypes.Count();
+            response.recordsTotal = context.Relations.Count();
             return response;
         }
         public static async Task<Utils.Messages.Response> AddRelationAsync(RelationAddEditModel relationModel)
@@ -91,10 +90,10 @@ namespace Quince.Admin.Core.Managers
         {
             var response = new Response();
             var context = new AdminDbContext();
-            var entity = context.Entities.Find(id);
-            if (entity != null)
+            var relation = context.Relations.Find(id);
+            if (relation != null)
             {
-                context.Entities.Remove(entity);
+                context.Relations.Remove(relation);
                 await context.SaveChangesAsync();
             }
             return response;
@@ -102,10 +101,10 @@ namespace Quince.Admin.Core.Managers
         public static RelationAddEditModel GetRelationEditModel(long id)
         {
             var context = new AdminDbContext();
-            var entity = context.Relations.Find(id);
-            if (entity != null)
+            var relation = context.Relations.Find(id);
+            if (relation != null)
             {
-                return new RelationAddEditModel() { Id = entity.Id, TypeId = entity.TypeId};
+                return new RelationAddEditModel() { Id = relation.Id, TypeId = relation.TypeId };
             }
             return null;
         }
@@ -113,10 +112,10 @@ namespace Quince.Admin.Core.Managers
         public static RelationDisplayModel GetRelationDisplayModel(long id)
         {
             var context = new AdminDbContext();
-            var entity = context.Relations.Find(id);
-            if (entity != null)
+            var relation = context.Relations.Find(id);
+            if (relation != null)
             {
-                return new RelationDisplayModel() { Id = entity.Id, Type = entity.Type.Name };
+                return new RelationDisplayModel() { Id = relation.Id, Type = relation.Type.Name };
             }
             return null;
         }

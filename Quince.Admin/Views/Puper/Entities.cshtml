@@ -72,7 +72,7 @@
                     "data": "Id",
                     "orderable": false,
                     render: function (data, type, row, meta) {
-                        return ' <a href="@Url.Action("AddRelationEntity", "Puper")/' + data + '?parentId=@(uniqueId)" class="btn btn-xs green-jungle quince-link" data-title="Add relation for entity ' + row.Name + '" data-target="modal"> <i class="icon-share"></i> Add relation </a>' +
+                        return ' <a href="@Url.Action("AddEntityRelation", "Puper")/' + data + '?parentId=@(uniqueId)" class="btn btn-xs green-jungle quince-link" data-title="Add relation for entity ' + row.Name + '" data-target="modal"> <i class="icon-share"></i> Add relation </a>' +
                                ' <a href="@Url.Action("EditEntity", "Puper")/' + data + '?parentId=@(uniqueId)" class="btn btn-xs blue quince-link" data-title="Edit entity ' + row.Name + '" data-target="modal"> <i class="fa fa-edit"></i> Edit </a>' +
                                ' <a href="@Url.Action("DeleteEntity", "Puper")/' + data + '?parentId=@(uniqueId)" class="btn btn-xs red quince-link" data-title="Delete entity ' + row.Name + '" data-target="modal"><i class="fa fa-close"></i> Delete </a>'
                     }

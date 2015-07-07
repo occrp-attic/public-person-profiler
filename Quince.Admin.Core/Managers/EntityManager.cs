@@ -59,6 +59,13 @@ namespace Quince.Admin.Core.Managers
             response.recordsTotal = context.Entities.Count();
             return response;
         }
+
+        public static IEnumerable<object> GetEntities(string query)
+        {
+            var context = new AdminDbContext();
+            var response = context.Entities.Where(e => e.Name.Contains(query ?? "")).OrderBy(e => e.Name).Take(25).Select(o => new { id = o.Id, text = o.Name });
+            return response;
+        }
         public static async Task<Utils.Messages.Response> AddEntityAsync(EntityAddEditModel entityModel)
         {
             var response = new Response();
@@ -137,6 +144,53 @@ namespace Quince.Admin.Core.Managers
             if (entity.TypeId == 0)
             {
                 response.AddMessage(false, "Select an Entity Type", ResponseMessageType.Warning);
+            }
+            return response;
+        }
+
+        public static AddEntityRelationModel GetEntityRelationModel(long id)
+        {
+            var context = new AdminDbContext();
+            var entity = context.Entities.Find(id);
+            var entityRelation = new AddEntityRelationModel
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            };
+            return entityRelation;
+        }
+
+        public static async Task<Response> AddEntityRelation(AddEntityRelationModel addEntityRelationModel)
+        {
+            var response = ValidateEntityRelation(addEntityRelationModel);
+            if(!response.Success)
+            {
+                return response;
+            }
+            var relation = new Relation() { TypeId = addEntityRelationModel.RelationTypeId };
+            relation.RelationEntities.Add(new RelationEntity { EntityId = addEntityRelationModel.Id });
+            relation.RelationEntities.Add(new RelationEntity { EntityId = addEntityRelationModel.OtherEntityId });
+
+            var context = new AdminDbContext();
+            context.Relations.Add(relation);
+            await context.SaveChangesAsync();
+            return response;
+        }
+
+        private static Response ValidateEntityRelation(AddEntityRelationModel addEntityRelationModel, Response response=null)
+        {
+            response = response ?? new Response();
+            if (addEntityRelationModel.Id == 0)
+            {
+                response.AddMessage(false, "Please select an entity", ResponseMessageType.Warning);
+            }
+            if (addEntityRelationModel.RelationTypeId == 0)
+            {
+                response.AddMessage(false, "Please select a relation type", ResponseMessageType.Warning);
+            }
+            if (addEntityRelationModel.OtherEntityId == 0)
+            {
+                response.AddMessage(false, "Please select the second entity", ResponseMessageType.Warning);
             }
             return response;
         }
