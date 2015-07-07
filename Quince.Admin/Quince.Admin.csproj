@@ -173,6 +173,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PuperController.cs" />
@@ -208,6 +209,7 @@
     <Content Include="Content\Dashboard\assets\admin\img\avatar7.jpg" />
     <Content Include="Content\Dashboard\assets\admin\img\avatar8.jpg" />
     <Content Include="Content\Dashboard\assets\admin\img\avatar9.jpg" />
+    <Content Include="Content\Dashboard\assets\admin\img\generic-avatar.png" />
     <Content Include="Content\Dashboard\assets\admin\img\hor-menu-red-arrow.png" />
     <Content Include="Content\Dashboard\assets\admin\img\icon-color-close.png" />
     <Content Include="Content\Dashboard\assets\admin\img\icon-color.png" />
@@ -234,6 +236,8 @@
     <Content Include="Content\Dashboard\assets\admin\scripts\layout.js" />
     <Content Include="Content\Dashboard\assets\global\css\components-md.css" />
     <Content Include="Content\Dashboard\assets\global\css\plugins-md.css" />
+    <Content Include="Content\Dashboard\assets\global\css\profile.css" />
+    <Content Include="Content\Dashboard\assets\global\css\tasks.css" />
     <Content Include="Content\Dashboard\assets\global\plugins\bootstrap-hover-dropdown\bootstrap-hover-dropdown.js" />
     <Content Include="Content\Dashboard\assets\global\plugins\bootstrap-hover-dropdown\bootstrap-hover-dropdown.min.js" />
     <Content Include="Content\Dashboard\assets\global\plugins\bootstrap-switch\css\bootstrap-switch.css" />
@@ -398,6 +402,7 @@
     <Content Include="Content\DataTables\images\xls_hover.png" />
     <Content Include="Content\DataTables\swf\copy_csv_xls.swf" />
     <Content Include="Content\DataTables\swf\copy_csv_xls_pdf.swf" />
+    <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -556,6 +561,7 @@
     <Content Include="Views\Puper\AddEntityRelation.cshtml" />
     <Content Include="Views\Shared\_PuperLayout.cshtml" />
     <Content Include="Views\Shared\_Header.cshtml" />
+    <Content Include="Views\Entity\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
