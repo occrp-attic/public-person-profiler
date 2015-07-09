@@ -9,5 +9,6 @@ namespace Quince.Admin.Core.Models.Entity
     public class EntityTableModel:EntityModel
     {
         public string Type { set; get; }
+        public string Image { set; get; }
     }
 }

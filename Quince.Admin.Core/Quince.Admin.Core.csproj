@@ -62,10 +62,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contexes\AdminDbContext.cs" />
+    <Compile Include="Contracts\Attribute.cs" />
     <Compile Include="Contracts\Entity.cs" />
+    <Compile Include="Contracts\EntityAttribute.cs" />
+    <Compile Include="Contracts\EntityReference.cs" />
     <Compile Include="Contracts\EntityType.cs" />
+    <Compile Include="Contracts\Reference.cs" />
     <Compile Include="Contracts\Relation.cs" />
+    <Compile Include="Contracts\RelationAttribute.cs" />
     <Compile Include="Contracts\RelationEntity.cs" />
+    <Compile Include="Contracts\RelationReference.cs" />
     <Compile Include="Contracts\RelationType.cs" />
     <Compile Include="Contracts\User.cs" />
     <Compile Include="Contracts\UserLogin.cs" />
@@ -73,7 +79,9 @@
     <Compile Include="Managers\EntityManager.cs" />
     <Compile Include="Managers\RelationTypeManager.cs" />
     <Compile Include="Managers\EntityTypeManager.cs" />
+    <Compile Include="Managers\SearchManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
+    <Compile Include="Models\AttributeDisplayModel.cs" />
     <Compile Include="Models\DataTables\DTColumn.cs" />
     <Compile Include="Models\DataTables\DTOrder.cs" />
     <Compile Include="Models\DataTables\DTRequest.cs" />
@@ -81,18 +89,25 @@
     <Compile Include="Models\DataTables\DTSearch.cs" />
     <Compile Include="Models\Entity\AddEntityRelationModel.cs" />
     <Compile Include="Models\Entity\EntityAddEditNModel.cs" />
+    <Compile Include="Models\Entity\EntityDisplayModel.cs" />
     <Compile Include="Models\Entity\EntityModel.cs" />
     <Compile Include="Models\EntityType\EntityTypeAddEditModel.cs" />
     <Compile Include="Models\EntityType\EntityTypeModel.cs" />
     <Compile Include="Models\EntityType\EntityTypeTableModel.cs" />
     <Compile Include="Models\Entity\EntityTableModel.cs" />
+    <Compile Include="Models\ReferenceDisplayModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\RelationType\RelationTypeAddEditModel.cs" />
     <Compile Include="Models\RelationType\RelationTypeDisplayModel.cs" />
     <Compile Include="Models\RelationType\RelationTypeModel.cs" />
+    <Compile Include="Models\RelationType\SiteRelationTypeDisplayModel.cs" />
+    <Compile Include="Models\Relation\EntityRelationDisplayModel.cs" />
     <Compile Include="Models\Relation\RelationAddEditModel.cs" />
     <Compile Include="Models\Relation\RelationDisplayModel.cs" />
     <Compile Include="Models\Relation\RelationModel.cs" />
+    <Compile Include="Models\Search\SearchModel.cs" />
+    <Compile Include="Models\Search\SearchResultItemModel.cs" />
+    <Compile Include="Models\Search\SearchResultModel.cs" />
     <Compile Include="Models\User\AddUserModel.cs" />
     <Compile Include="Models\User\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

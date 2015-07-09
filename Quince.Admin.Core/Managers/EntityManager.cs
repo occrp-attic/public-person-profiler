@@ -1,7 +1,10 @@
 ﻿using Quince.Admin.Core.Contexes;
 using Quince.Admin.Core.Contracts;
+using Quince.Admin.Core.Models;
 using Quince.Admin.Core.Models.DataTables;
 using Quince.Admin.Core.Models.Entity;
+using Quince.Admin.Core.Models.Relation;
+using Quince.Admin.Core.Models.RelationType;
 using Quince.Utils.Messages;
 using System;
 using System.Collections.Generic;
@@ -163,7 +166,7 @@ namespace Quince.Admin.Core.Managers
         public static async Task<Response> AddEntityRelation(AddEntityRelationModel addEntityRelationModel)
         {
             var response = ValidateEntityRelation(addEntityRelationModel);
-            if(!response.Success)
+            if (!response.Success)
             {
                 return response;
             }
@@ -177,7 +180,7 @@ namespace Quince.Admin.Core.Managers
             return response;
         }
 
-        private static Response ValidateEntityRelation(AddEntityRelationModel addEntityRelationModel, Response response=null)
+        private static Response ValidateEntityRelation(AddEntityRelationModel addEntityRelationModel, Response response = null)
         {
             response = response ?? new Response();
             if (addEntityRelationModel.Id == 0)
@@ -193,6 +196,27 @@ namespace Quince.Admin.Core.Managers
                 response.AddMessage(false, "Please select the second entity", ResponseMessageType.Warning);
             }
             return response;
+        }
+
+        public static EntityDisplayModel GetEntity(long id)
+        {
+            var context = new AdminDbContext();
+            var entity = context.Entities.Find(id);
+            var model = new EntityDisplayModel();
+            model.Id = entity.Id;
+            model.Image = entity.Image ?? entity.Type.DefaultImage;
+            model.Name = entity.Name;
+            model.Type = entity.Type.Name;
+            model.Description = entity.Description;
+            model.RelationTypes = entity.RelationEntities.Select(re => re.Relation.Type).Distinct().Select(rt => new SiteRelationTypeDisplayModel { Id = rt.Id, Name = rt.Name }).ToList();
+            // var relations = entity.RelationEntities.Select(re => re.Relation).Select(r => new SiteRelationDisplayModel() {TypeId=r.TypeId, Type= r.Type.Name, Entities = r.RelationEntities.Where(re => re.EntityId != entity.Id).Select(re => re.Entity).Select(e=> new EntityTableModel(){Id = e.Id, Name = e.Name, Type = e.Type.Name, Image = e.Image??e.Type.DefaultImage})});
+            var relations = entity.RelationEntities.Select(re => re.Relation).Select(r => new SiteRelationDisplayModel() { TypeId = r.TypeId, Type = r.Type.Name, Attributes = r.Attributes.Select(a => new AttributeDisplayModel { Name = a.Name, Value = a.Value }), Entities = r.RelationEntities.Where(re => re.EntityId != entity.Id).Select(re => re.Entity).Select(e => new EntityTableModel() { Id = e.Id, Name = e.Name, Type = e.Type.Name, Image = e.Image ?? e.Type.DefaultImage }) });
+            foreach (var relationType in model.RelationTypes)
+            {
+                relationType.Relations.AddRange(relations.Where(r => r.TypeId.Equals(relationType.Id)));
+            }
+            model.References = entity.References.Select(r => new ReferenceDisplayModel { Description = r.Description, Document = r.Document, Link = r.Link, Title = r.Title });
+            return model;
         }
     }
 }

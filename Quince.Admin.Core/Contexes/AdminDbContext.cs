@@ -24,6 +24,16 @@ namespace Quince.Admin.Core.Contexes
         public DbSet<RelationType> RelationTypes { set; get; }
         public DbSet<Relation> Relations { set; get; }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Quince.Admin.Core.Contracts.Attribute>()
+                        .Map<EntityAttribute>(m => m.Requires("Type").HasValue(1))
+                        .Map<RelationAttribute>(m => m.Requires("Type").HasValue(2));
+
+            modelBuilder.Entity<Quince.Admin.Core.Contracts.Reference>()
+                        .Map<EntityReference>(m => m.Requires("Type").HasValue(1))
+                        .Map<RelationReference>(m => m.Requires("Type").HasValue(2));
+        }
         public static AdminDbContext Create()
         {
             return new AdminDbContext();

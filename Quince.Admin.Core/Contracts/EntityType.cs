@@ -12,6 +12,7 @@ namespace Quince.Admin.Core.Contracts
         public long Id { set; get; }
         public long Code { set; get; }
         public string Name { set; get; }
+        public string DefaultImage { set; get; }
 
         private List<Entity> _entities;
         [InverseProperty("Type")]
