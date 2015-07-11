@@ -1,0 +1,69 @@
+﻿@model Quince.Admin.Core.Models.Relation.RelationCardModel
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PORTLET -->
+        <div class="portlet light ">
+            <div class="portlet-body">
+                <div class="row number-stats margin-bottom-30">
+                    @if (Model.Entities.Where(e => !string.IsNullOrEmpty(e.Type)).Any())
+                    {
+                        <div class="row">
+                            @foreach (var entity in Model.Entities.Where(e => !string.IsNullOrEmpty(e.Type)))
+                            {
+                                <div class="col-md-6">
+                                    <div class="item">
+                                        <div class="item-head">
+                                            <div class="item-details">
+                                                <span class="item-label">@entity.Type</span>
+                                                <span class="item-name"><a href="@Url.Action("Details", "Entity", new { Id = entity.Id})" class="primary-link">@entity.Name</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    }
+                    @if (Model.Entities.Where(e => string.IsNullOrEmpty(e.Type)).Any())
+                    {
+                        <div class="row">
+                            @foreach (var entity in Model.Entities.Where(e => string.IsNullOrEmpty(e.Type)))
+                            {
+                                <div class="col-md-12">
+                                    <div class="item">
+                                        <div class="item-head">
+                                            <div class="item-details">
+                                                <span class="item-label">@entity.EntityType</span>
+                                                <span class="item-name"><a href="@Url.Action("Details", "Entity", new { Id = entity.Id})" class="primary-link">@entity.Name</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    @if (Model.Attributes.Any())
+                    {
+                        <hr />
+                        <div class="row">
+                            @foreach (var attribute in Model.Attributes)
+                            {
+                                <div class="col-md-4">
+                                    <div class="item">
+                                        <div class="item-head">
+                                            <div class="item-details">
+                                                <span class="item-label">@attribute.Name</span>: <span class="item-name">@attribute.Value</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- END PORTLET -->
+    </div>
+</div>
+

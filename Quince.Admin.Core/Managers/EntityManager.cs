@@ -1,8 +1,10 @@
 ﻿using Quince.Admin.Core.Contexes;
 using Quince.Admin.Core.Contracts;
 using Quince.Admin.Core.Models;
+using Quince.Admin.Core.Models.Charts;
 using Quince.Admin.Core.Models.DataTables;
 using Quince.Admin.Core.Models.Entity;
+using Quince.Admin.Core.Models.Pages;
 using Quince.Admin.Core.Models.Relation;
 using Quince.Admin.Core.Models.RelationType;
 using Quince.Utils.Messages;
@@ -62,7 +64,6 @@ namespace Quince.Admin.Core.Managers
             response.recordsTotal = context.Entities.Count();
             return response;
         }
-
         public static IEnumerable<object> GetEntities(string query)
         {
             var context = new AdminDbContext();
@@ -126,7 +127,6 @@ namespace Quince.Admin.Core.Managers
             }
             return null;
         }
-
         public static EntityTableModel GetEntityTableModel(long id)
         {
             var context = new AdminDbContext();
@@ -150,7 +150,6 @@ namespace Quince.Admin.Core.Managers
             }
             return response;
         }
-
         public static AddEntityRelationModel GetEntityRelationModel(long id)
         {
             var context = new AdminDbContext();
@@ -162,7 +161,6 @@ namespace Quince.Admin.Core.Managers
             };
             return entityRelation;
         }
-
         public static async Task<Response> AddEntityRelation(AddEntityRelationModel addEntityRelationModel)
         {
             var response = ValidateEntityRelation(addEntityRelationModel);
@@ -179,7 +177,6 @@ namespace Quince.Admin.Core.Managers
             await context.SaveChangesAsync();
             return response;
         }
-
         private static Response ValidateEntityRelation(AddEntityRelationModel addEntityRelationModel, Response response = null)
         {
             response = response ?? new Response();
@@ -197,7 +194,6 @@ namespace Quince.Admin.Core.Managers
             }
             return response;
         }
-
         public static EntityDisplayModel GetEntity(long id)
         {
             var context = new AdminDbContext();
@@ -208,15 +204,74 @@ namespace Quince.Admin.Core.Managers
             model.Name = entity.Name;
             model.Type = entity.Type.Name;
             model.Description = entity.Description;
+            model.Attributes = entity.Attributes.Select(a => new AttributeDisplayModel { Name = a.Name, Value = a.Value });
             model.RelationTypes = entity.RelationEntities.Select(re => re.Relation.Type).Distinct().Select(rt => new SiteRelationTypeDisplayModel { Id = rt.Id, Name = rt.Name }).ToList();
             // var relations = entity.RelationEntities.Select(re => re.Relation).Select(r => new SiteRelationDisplayModel() {TypeId=r.TypeId, Type= r.Type.Name, Entities = r.RelationEntities.Where(re => re.EntityId != entity.Id).Select(re => re.Entity).Select(e=> new EntityTableModel(){Id = e.Id, Name = e.Name, Type = e.Type.Name, Image = e.Image??e.Type.DefaultImage})});
-            var relations = entity.RelationEntities.Select(re => re.Relation).Select(r => new SiteRelationDisplayModel() { TypeId = r.TypeId, Type = r.Type.Name, Attributes = r.Attributes.Select(a => new AttributeDisplayModel { Name = a.Name, Value = a.Value }), Entities = r.RelationEntities.Where(re => re.EntityId != entity.Id).Select(re => re.Entity).Select(e => new EntityTableModel() { Id = e.Id, Name = e.Name, Type = e.Type.Name, Image = e.Image ?? e.Type.DefaultImage }) });
-            foreach (var relationType in model.RelationTypes)
+            var relations = entity.RelationEntities.Select(re => re.Relation);//.Select(r => new SiteRelationDisplayModel() { TypeId = r.TypeId, Type = r.Type.Name, Attributes = r.Attributes.Select(a => new AttributeDisplayModel { Name = a.Name, Value = a.Value }), Entities = r.RelationEntities.Where(re => re.EntityId != entity.Id).Select(re => re.Entity).Select(e => new EntityTableModel() { Id = e.Id, Name = e.Name, Type = e.Type.Name, Image = e.Image ?? e.Type.DefaultImage }) });
+            for (var i=0; i< model.RelationTypes.Count(); i++)
             {
-                relationType.Relations.AddRange(relations.Where(r => r.TypeId.Equals(relationType.Id)));
+                var relationType = model.RelationTypes.ElementAt(i);
+                relationType.TotalRelations = relations.Where(r => r.TypeId.Equals(relationType.Id)).Count();
+                relationType.Relations.AddRange(relations.Where(r => r.TypeId.Equals(relationType.Id)).OrderByDescending(r => r.Id).Take(5).Select(r => new SiteRelationDisplayModel() { TypeId = r.TypeId, Type = r.Type.Name, Attributes = r.Attributes.Select(a => new AttributeDisplayModel { Name = a.Name, Value = a.Value }), Entities = r.RelationEntities.Where(re => re.EntityId != entity.Id).Select(re => re.Entity).Select(e => new EntityTableModel() { Id = e.Id, Name = e.Name, Type = e.Type.Name, Image = e.Image ?? e.Type.DefaultImage }) }));
             }
             model.References = entity.References.Select(r => new ReferenceDisplayModel { Description = r.Description, Document = r.Document, Link = r.Link, Title = r.Title });
             return model;
         }
+        public static bool CheckEntityByAttributeNameAndValue(int entityType, string name, string value, AdminDbContext context = null)
+        {
+            context = context ?? new AdminDbContext();
+            return context.Entities.Any(e => e.Type.Code.Equals(entityType) && e.Attributes.Any(attr => attr.Name.Equals(name) && attr.Value.Equals(value)));
+        }
+
+        public static IEnumerable<EntityAmount> GetEntityAmount(int entityId, int entityCode, int relationEntityCode)
+        {
+            var context = new AdminDbContext();
+            var entity = context.Entities.Find(entityId);
+            var relations = entity.RelationEntities.Where(re => re.MemberType == entityCode)
+            .Select(re => re.Relation)
+            .Where(r => r.Attributes.Any(attr => attr.Name.Equals("Amount"))).Distinct();
+            var result = new List<EntityAmount>();
+            foreach (var relation in relations)
+            {
+                var amount = Convert.ToDecimal(relation.Attributes.First(attr => attr.Name.Equals("Amount")).Value);
+                var entityName = relation.RelationEntities.First(re => re.MemberType == relationEntityCode).Entity.Name;
+                if (result.Any(r => r.Name.Equals(entityName)))
+                {
+                    result.First(r => r.Name.Equals(entityName)).Amount += amount;
+                }
+                else
+                {
+                    var entityAmount = new EntityAmount() { Amount = amount, Name = entityName };
+                    result.Add(entityAmount);
+                }
+            }
+            return result;
+        }
+        public static IEnumerable<DateAmount> GetDateAmount(int entityId, int entityCode, int relationEntityCode)
+        {
+            var context = new AdminDbContext();
+            var entity = context.Entities.Find(entityId);
+            //var relations = entity.RelationEntities.Where(re => re.MemberType == entityCode)
+            //.Select(re => re.Relation)
+            //.Where(r => r.Attributes.Any(attr => attr.Name.Equals("Amount"))&&r.Attributes.Any(attr1=>attr1.Name.Equals("Contract date"))).Distinct();
+            var relations = context.Relations.Where(r => r.RelationEntities.Any(re => re.EntityId.Equals(entityId) && re.MemberType == entityCode) && r.RelationEntities.Any(re1 => re1.MemberType == relationEntityCode) && r.Attributes.Any(attr => attr.Name.Equals("Amount")) && r.Attributes.Any(attr1 => attr1.Name.Equals("Contract date")));
+            var result = new List<DateAmount>();
+            foreach (var relation in relations)
+            {
+                var amount = Convert.ToDecimal(relation.Attributes.First(attr => attr.Name.Equals("Amount")).Value);
+                var entityName = relation.Attributes.First(attr => attr.Name.Equals("Contract date")).Value;
+                if (result.Any(r => r.Date.Equals(entityName)))
+                {
+                    result.First(r => r.Date.Equals(entityName)).Amount += amount;
+                }
+                else
+                {
+                    var entityAmount = new DateAmount() { Amount = amount, Date = entityName };
+                    result.Add(entityAmount);
+                }
+            }
+            return result;
+        }
+
     }
 }

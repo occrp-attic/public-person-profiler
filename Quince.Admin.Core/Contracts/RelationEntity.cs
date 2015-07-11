@@ -12,11 +12,16 @@ namespace Quince.Admin.Core.Contracts
         public long Id { set; get; }
         public long RelationId { set; get; }
         public long EntityId { set; get; }
-        
+        public long? MemberType { set; get; }
+
         [ForeignKey("EntityId")]
         public virtual Entity Entity { set; get; }
 
         [ForeignKey("RelationId")]
         public virtual Relation Relation { set; get; }
-    }
+       
+        [ForeignKey("MemberType")]
+        public virtual RelationMemberType Type { set; get; }
+
+    } 
 }

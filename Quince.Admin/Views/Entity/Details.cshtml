@@ -25,7 +25,7 @@
                     <div class="profile-userpic">
                         @if (string.IsNullOrEmpty(Model.Image))
                         {
-                            <img src="~/Content/Dashboard/assets/admin/img/generic-avatar.png" class="img-responsive" alt="" />
+                            <img src="~/Content/Dashboard/assets/admin/img/photo.png" class="img-responsive" alt="" />
                         }
                         else
                         {
@@ -44,12 +44,12 @@
                         </div>
                     </div>
                     <!-- END SIDEBAR USER TITLE -->
-                    <!-- SIDEBAR BUTTONS -->
-                    <div class="profile-userbuttons">
-                        <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
-                        <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
-                    </div>
-                    <!-- END SIDEBAR BUTTONS -->
+                    @*<!-- SIDEBAR BUTTONS -->
+                        <div class="profile-userbuttons">
+                            <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
+                            <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
+                        </div>
+                        <!-- END SIDEBAR BUTTONS -->*@
                     <!-- SIDEBAR MENU -->
                     <div class="profile-usermenu">
                         <ul class="nav">
@@ -59,76 +59,12 @@
                                     Overview
                                 </a>
                             </li>
-                            @*<li>
-                                    <a href="extra_profile_account.html">
-                                        <i class="icon-settings"></i>
-                                        Account Settings
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="page_todo.html" target="_blank">
-                                        <i class="icon-check"></i>
-                                        Tasks
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="extra_profile_help.html">
-                                        <i class="icon-info"></i>
-                                        Help
-                                    </a>
-                                </li>*@
                         </ul>
                     </div>
                     <!-- END MENU -->
                 </div>
                 <!-- END PORTLET MAIN -->
                 <!-- PORTLET MAIN -->
-                @*<div class="portlet light">
-                        <!-- STAT -->
-                        <div class="row list-separated profile-stat">
-                            <div class="col-md-4 col-sm-4 col-xs-6">
-                                <div class="uppercase profile-stat-title">
-                                    37
-                                </div>
-                                <div class="uppercase profile-stat-text">
-                                    Projects
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 col-xs-6">
-                                <div class="uppercase profile-stat-title">
-                                    51
-                                </div>
-                                <div class="uppercase profile-stat-text">
-                                    Tasks
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 col-xs-6">
-                                <div class="uppercase profile-stat-title">
-                                    61
-                                </div>
-                                <div class="uppercase profile-stat-text">
-                                    Uploads
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END STAT -->
-                        <div>
-                            <h4 class="profile-desc-title">About Marcus Doe</h4>
-                            <span class="profile-desc-text"> Lorem ipsum dolor sit amet diam nonummy nibh dolore. </span>
-                            <div class="margin-top-20 profile-desc-link">
-                                <i class="fa fa-globe"></i>
-                                <a href="http://www.keenthemes.com">www.keenthemes.com</a>
-                            </div>
-                            <div class="margin-top-20 profile-desc-link">
-                                <i class="fa fa-twitter"></i>
-                                <a href="http://www.twitter.com/keenthemes/">@@keenthemes</a>
-                            </div>
-                            <div class="margin-top-20 profile-desc-link">
-                                <i class="fa fa-facebook"></i>
-                                <a href="http://www.facebook.com/keenthemes/">keenthemes</a>
-                            </div>
-                        </div>
-                    </div>*@
                 <!-- END PORTLET MAIN -->
             </div>
             <!-- END BEGIN PROFILE SIDEBAR -->
@@ -161,11 +97,21 @@
                                                         @relationType.Name
                                                     </div>
                                                     <div class="number">
-                                                        @relationType.Relations.Sum(r => r.Entities.Count())
+                                                        @relationType.TotalRelations
                                                     </div>
                                                 </div>
                                             </div>
                                         }
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="portlet-title">
+                                        <div class="caption caption-md">
+                                            <i class="icon-bar-chart theme-font hide"></i>
+                                            <span class="caption-subject font-blue-madison bold uppercase">Tender winner</span>
+                                        </div>
+                                    </div>
+                                    <div id="mainChart" style="height:300px">
                                     </div>
                                 </div>
                                 <div class="table-scrollable table-scrollable-borderless">
@@ -196,31 +142,52 @@
                                             <div class="general-item-list">
                                                 @foreach (var relation in relationType.Relations)
                                                 {
-                                                    foreach (var entity in relation.Entities)
-                                                    {
-                                                        <div class="item">
+
+                                                    <div class="item">
+                                                        @foreach (var entity in relation.Entities)
+                                                        {
                                                             <div class="item-head">
+
                                                                 <div class="item-details">
-                                                                    @*<img class="item-pic" src="../../assets/admin/layout3/img/avatar4.jpg">*@
-                                                                    <a href="@Url.Action("Details", "Entity", new { id=entity.Id})" class="item-name primary-link">@entity.Name</a>
+
+                                                                    <a href="@Url.Action("Details", "Entity", new { id=entity.Id})" class="item-name primary-link">
+                                                                        @if (!string.IsNullOrEmpty(entity.Image))
+                                                                        {
+                                                                            <img src="~/Content/Dashboard/assets/admin/img/@entity.Image" class="item-pic" style="max-height:35px; margin-right:10px" alt="" />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <img src="~/Content/Dashboard/assets/admin/img/photo.png" class="item-pic" style="max-height:35px; margin-right:10px" alt="" />
+
+                                                                        }
+                                                                        @entity.Name
+                                                                    </a>
                                                                     <span class="item-label">@entity.Type</span>
                                                                 </div>
                                                             </div>
-                                                            @if (relation.Attributes.Any())
-                                                            {
+                                                        }
+                                                        @if (relation.Attributes.Any())
+                                                        {
 
-                                                                <div class="item-body">
-                                                                    @foreach (var attribute in relation.Attributes)
-                                                                    {
+                                                            <div class="item-body">
+                                                                @foreach (var attribute in relation.Attributes.Take(3))
+                                                                {
+                                                                    <div>
                                                                         <span class="item-label">@attribute.Name</span> <text>:</text> <span class="item-label">@attribute.Value</span>
-                                                                    }
-                                                                </div>
-                                                            }
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        }
 
 
-                                                        </div>
-                                                    }
+                                                    </div>
                                                 }
+
+                                                <div class="row">
+                                                    <div class="pull-right">
+                                                        <a href="@Url.Action("RelationType", "Entity", new {id=Model.Id, relationType=relationType.Id })" class="primary-link">View all</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -231,6 +198,87 @@
                         }
                     </div>
                     <div class="col-md-6">
+                        @if (Model.Attributes.Any())
+                        {<div class="row">
+                            <div class="col-md-12">
+                                <!-- BEGIN PORTLET -->
+                                <div class="portlet light ">
+                                    <div class="portlet-title">
+                                        <div class="caption caption-md">
+                                            <i class="icon-bar-chart theme-font hide"></i>
+                                            <span class="caption-subject font-blue-madison bold uppercase">Attributes</span>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="general-item-list">
+                                            @foreach (var attribute in Model.Attributes)
+                                            {
+                                                <div class="item">
+                                                    <div class="item-head">
+                                                        <div class="item-details">
+                                                            <span class="item-label">@attribute.Name</span>
+                                                            <span class="item-name ">@attribute.Value</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- BEGIN CHART PORTLET-->
+                                <div class="portlet light">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="icon-bar-chart font-green-haze"></i>
+                                            <span class="caption-subject bold uppercase font-green-haze"> Expences</span>
+                                        </div>
+                                        <div class="tools">
+
+                                            <a href="javascript:;" class="fullscreen">
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div id="expencesChart" class="chart" style="height: 525px;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END CHART PORTLET-->
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- BEGIN CHART PORTLET-->
+                                <div class="portlet light">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="icon-bar-chart font-green-haze"></i>
+                                            <span class="caption-subject bold uppercase font-green-haze"> Incomes</span>
+                                        </div>
+                                        <div class="tools">
+                                            <a href="javascript:;" class="fullscreen">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div id="incomesChart" class="chart" style="height: 525px;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END CHART PORTLET-->
+                            </div>
+                        </div>
+
+
                         @if (Model.References.Any())
                         {<div class="row">
                             <div class="col-md-12">
@@ -287,3 +335,124 @@
     </div>
     <!-- END PAGE CONTENT-->
 </div>
+
+@section scripts{
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amcharts/serial.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amcharts/pie.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amcharts/radar.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amcharts/themes/light.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amcharts/themes/patterns.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amcharts/themes/chalk.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/ammap/ammap.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/ammap/maps/js/worldLow.js" type="text/javascript"></script>
+    <script src="~/Content/Dashboard/assets/global/plugins/amcharts/amstockcharts/amstock.js" type="text/javascript"></script>
+}
+
+@section endscripts{
+    <script>
+        $(document).ready(function () {
+            function compareDate(str1){
+                // str1 format should be dd/mm/yyyy. Separator can be anything e.g. / or -. It wont effect
+                var dt1   = parseInt(str1.substring(0,2));
+                var mon1  = parseInt(str1.substring(3,5));
+                var yr1   = parseInt(str1.substring(6,10));
+                var date1 = new Date(yr1, mon1-1, dt1);
+                return date1;
+            }
+            $.ajax({
+                url: "@Url.Action("GetEntityAmount", "Entity")",
+                data: {entityId: @Model.Id, entityType: 1, otherEntityType:2},
+                dataType:"json",
+                type:"POST",
+                success:function(data){
+                    var chart = AmCharts.makeChart("expencesChart", {
+                        "type": "pie",
+                        "theme": "light",
+                        "fontFamily": 'Open Sans',
+                        "color":    '#888',
+                        "dataProvider": data,
+                        "valueField": "Amount",
+                        "titleField": "Name"
+                    });
+
+                }
+            });
+
+            $.ajax({
+                url: "@Url.Action("GetEntityAmount", "Entity")",
+                data: {entityId: @Model.Id, entityType: 2, otherEntityType:1},
+                dataType:"json",
+                type:"POST",
+                success:function(data){
+                    var chart = AmCharts.makeChart("incomesChart", {
+                        "type": "pie",
+                        "theme": "light",
+                        "fontFamily": 'Open Sans',
+                        "color":    '#888',
+                        "dataProvider": data,
+                        "valueField": "Amount",
+                        "titleField": "Name"
+                    });
+
+                }
+            });
+
+            $.ajax({
+                url: "@Url.Action("GetDateAmount", "Entity")",
+                data: {entityId: @Model.Id, entityType: 2, otherEntityType:1},
+                dataType:"json",
+                type:"POST",
+                success:function(data){
+                    for(i in data)
+                    {
+                        data[i].Date = compareDate(data[i].Date)
+                    }
+                    debugger;
+                    var chart = AmCharts.makeChart("mainChart", {
+                        "type": "serial",
+                        "theme": "light",
+                        "marginRight": 80,
+                        "autoMarginOffset": 20,
+                        "marginTop": 7,
+                        "dataProvider": data,
+                        "valueAxes": [{
+                            "axisAlpha": 0.2,
+                            "dashLength": 1,
+                            "position": "left"
+                        }],
+
+                        // "valueField": "Date",
+                        "mouseWheelZoomEnabled": true,
+                        "graphs": [{
+                            "id": "g1",
+                            "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+                            "bullet": "round",
+                            "bulletBorderAlpha": 1,
+                            "bulletColor": "#FFFFFF",
+                            "hideBulletsCount": 50,
+                            "title": "red line",
+                            "valueField": "Amount",
+                            "useLineColorForBulletBorder": true,
+                            "type": "smoothedLine",
+                        }],
+
+
+                        "categoryField": "Date",
+                        "categoryAxis": {
+                            "parseDates": true,
+                            "axisColor": "#DADADA",
+                            "dashLength": 1,
+                            "minorGridEnabled": true
+                        },
+                        "export": {
+                            "enabled": true
+                        }
+                    });
+
+                }
+            });
+
+        });
+    </script>
+}

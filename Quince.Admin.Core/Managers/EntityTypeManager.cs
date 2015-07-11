@@ -59,11 +59,15 @@ namespace Quince.Admin.Core.Managers
             response.recordsTotal = context.EntityTypes.Count();
             return response;
         }
-        public static IEnumerable<EntityTypeModel> GetEntityTypes()
+        public static IEnumerable<EntityTypeModel> GetEntityTypes(bool withEntities=false)
         {
             var context = new AdminDbContext();
-            var responseData = context.EntityTypes.OrderBy(et=>et.Name).Select(u => new EntityTypeTableModel { Id = u.Id, Code = u.Code, Name = u.Name });
-            return responseData;
+            var responseData = context.EntityTypes.AsEnumerable();
+            if(withEntities)
+            {
+                responseData = responseData.Where(et=>et.Entities.Any());
+            }
+            return responseData.OrderBy(et=>et.Name).Select(u => new EntityTypeTableModel { Id = u.Id, Code = u.Code, Name = u.Name });
         }
         public static async Task<Utils.Messages.Response> AddEntiTypeAsync(EntityTypeAddEditModel entityTypeModel)
         {
@@ -123,6 +127,13 @@ namespace Quince.Admin.Core.Managers
                 return new EntityTypeAddEditModel() { Id = entityType.Id, Code = entityType.Code, Name = entityType.Name };
             }
             return null;
+        }
+
+        internal static IEnumerable<HomePageEntityTypeDisplayModel> GetHomeEntitiesTypes(AdminDbContext context = null)
+        {
+            context = context ?? new AdminDbContext();
+            return context.EntityTypes.OrderBy(rt => rt.Name).Where(et=>et.Entities.Any()).Select(rt => new HomePageEntityTypeDisplayModel() { Id = rt.Id, Name = rt.Name, Count = rt.Entities.Count() });
+
         }
     }
 }

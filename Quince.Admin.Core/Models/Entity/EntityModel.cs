@@ -11,5 +11,7 @@ namespace Quince.Admin.Core.Models.Entity
     {
        public long Id { set; get; }
        public string Name { set; get; }
+       public string Image { set; get; }
+
     }
 }

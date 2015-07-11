@@ -1,0 +1,131 @@
+﻿@model Quince.Admin.Core.Models.Pages.EntityRelationsPageModel
+@{
+    ViewBag.Title = "RelationType";
+    Layout = "~/Views/Shared/_PuperLayout.cshtml";
+}
+
+<div class="page-content">
+    <!-- BEGIN PAGE HEAD -->
+    <div class="page-head">
+        <!-- BEGIN PAGE TITLE -->
+        <div class="page-title">
+            <h1>@Model.Name profile</h1>
+        </div>
+        <!-- END PAGE TITLE -->
+    </div>
+    <!-- END PAGE HEAD -->
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PROFILE SIDEBAR -->
+            <div class="profile-sidebar" style="width: 250px;">
+                <!-- PORTLET MAIN -->
+                <div class="portlet light profile-sidebar-portlet">
+                    <!-- SIDEBAR USERPIC -->
+                    <div class="profile-userpic">
+                        @if (string.IsNullOrEmpty(Model.Image))
+                        {
+                            <img src="~/Content/Dashboard/assets/admin/img/photo.png" class="img-responsive" alt="" />
+                        }
+                        else
+                        {
+                            <img src="~/Content/Dashboard/assets/admin/img/@Model.Image" class="img-responsive" alt="" />
+                        }
+
+                    </div>
+                    <!-- END SIDEBAR USERPIC -->
+                    <!-- SIDEBAR USER TITLE -->
+                    <div class="profile-usertitle">
+                        <div class="profile-usertitle-name">
+                            @Model.Name
+                        </div>
+                        <div class="profile-usertitle-job">
+                            @Model.Type
+                        </div>
+                    </div>
+                    <!-- END SIDEBAR USER TITLE -->
+                    @*<!-- SIDEBAR BUTTONS -->
+                        <div class="profile-userbuttons">
+                            <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
+                            <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
+                        </div>
+                        <!-- END SIDEBAR BUTTONS -->*@
+                    <!-- SIDEBAR MENU -->
+                    <div class="profile-usermenu">
+                        <ul class="nav">
+                            <li class="active">
+                                <a href="@Url.Action("Details", "Entity", new { id=Model.Id })">
+                                    <i class="icon-home"></i>
+                                    Overview
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- END MENU -->
+                </div>
+                <!-- END PORTLET MAIN -->
+                <!-- PORTLET MAIN -->
+                <!-- END PORTLET MAIN -->
+            </div>
+            <!-- END BEGIN PROFILE SIDEBAR -->
+            <!-- BEGIN PROFILE CONTENT -->
+            <div class="profile-content">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PORTLET -->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption caption-md">
+                                    <i class="icon-bar-chart theme-font hide"></i>
+                                    <span class="caption-subject font-blue-madison bold uppercase">@Model.RelationType</span>
+                                </div>
+
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row number-stats margin-bottom-30">
+                                    @foreach (var relation in Model.Relations)
+                                    {
+                                        @Html.Partial("_RelationCard", relation)
+                                    }
+                                </div>
+                                <div>
+                                    <ul class="pagination">
+                                        @if (Model.CurrentPage != 1)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Browse", "Entity", new { Id=Model.Id, relationType=Model.CurrentRelationTypeId, page=Model.CurrentPage })">
+                                                    <i class="fa fa-angle-left"></i>
+                                                </a>
+                                            </li>
+                                        }
+                                        @for (var i = 1; i <= Model.TotalPages; i++)
+                                        {
+                                            <li class="@if(i==Model.CurrentPage){<text>disabled</text>}">
+                                                <a href="@Url.Action("Browse", "Entity", new { Id = Model.Id, relationType = Model.CurrentRelationTypeId, page = i })">
+                                                    @i
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.TotalPages != Model.CurrentPage)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Browse", "Entity", new { Id = Model.Id, relationType = Model.CurrentRelationTypeId, page = Model.CurrentPage + 1 })">
+                                                    <i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END PORTLET -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>

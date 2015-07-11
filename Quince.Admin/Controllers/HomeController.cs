@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Quince.Admin.Core.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +11,8 @@ namespace Quince.Admin.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var pageModel = PagesManager.GetHomePageModel();
+            return View(pageModel);
         }
 
         public ActionResult About()

@@ -1,0 +1,53 @@
+﻿@model Quince.Admin.Core.Models.Pages.RelationBrowsePageModel
+@{
+    ViewBag.Title = "Browse";
+    Layout = "~/Views/Shared/_PuperLayout.cshtml";
+}
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PORTLET -->
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart theme-font hide"></i>
+                    <span class="caption-subject font-blue-madison bold uppercase">@Model.Type</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                @foreach (var relation in Model.Relations)
+                {
+                    @Html.Partial("_RelationCard", relation)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <ul class="pagination">
+        @if (Model.CurrentPage != 1)
+        {
+            <li>
+                <a href="@Url.Action("Browse", "Entity", new { Id=Model.CurrentEntityTypeId, page=Model.CurrentPage })">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            </li>
+        }
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="@if(i==Model.CurrentPage){<text>disabled</text>}">
+                <a href="@Url.Action("Browse", "Entity", new { Id = Model.CurrentEntityTypeId, page = i })">
+                    @i
+                </a>
+            </li>
+        }
+        @if (Model.TotalPages != Model.CurrentPage)
+        {
+            <li>
+                <a href="@Url.Action("Browse", "Entity", new { Id = Model.CurrentEntityTypeId, page = Model.CurrentPage + 1 })">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+

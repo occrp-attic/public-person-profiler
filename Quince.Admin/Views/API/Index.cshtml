@@ -1,0 +1,50 @@
+﻿<html>
+<head>
+    <title>Api Clients</title>
+    <link href="~/Content/Dashboard/assets/global/plugins/bootstrap/css/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="col-md-12">
+        <div class="row">
+            tenders from etender.gov.md: items on page: <input type="text" class="input-inline" id="onPage" value="100"> Requests: <input type="text" class="input-inline" id="requests" value="100">  <a href="#" id="udpateTenders" class="btn btn-success">Update</a>
+        </div>
+        <div class="row">
+            contracts from etender.gov.md: items on page: <input type="text" class="input-inline" id="onPageContracts" value="100"> Requests: <input type="text" class="input-inline" id="requestsContracts" value="100">  <a href="#" id="udpateContracts" class="btn btn-success">Update</a>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="console"></div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Content/Dashboard/assets/global/plugins/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.0.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+        $(function () {
+            var apiClient = $.connection.apiClient;
+            apiClient.client.updateProgress = function (progress) {
+                var row = $("<div/>");
+                row.addClass("row");
+                row.text(progress.Message);
+                $(".console").prepend(row);
+            };
+            $.connection.hub.start().done(function () {
+                $('#udpateTenders').click(function () {
+                    var onPage = $("#onPage").val();
+                    var requests = $("#requests").val();
+                    apiClient.server.updateETenders(onPage, requests);
+                   // UpdateETenderContracts
+                });
+                $('#udpateContracts').click(function () {
+                    var onPage = $("#onPageContracts").val();
+                    var requests = $("#requestsContracts").val();
+                    apiClient.server.updateETenderContracts(onPage, requests);
+                    // UpdateETenderContracts
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

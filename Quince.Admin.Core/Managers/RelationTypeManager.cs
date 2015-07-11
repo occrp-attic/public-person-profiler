@@ -59,11 +59,16 @@ namespace Quince.Admin.Core.Managers
             response.recordsTotal = context.RelationTypes.Count();
             return response;
         }
-        public static IEnumerable<RelationTypeModel> GetRelationTypes()
+        public static IEnumerable<RelationTypeModel> GetRelationTypes(bool withItems = false)
         {
             var context = new AdminDbContext();
-            var responseData = context.RelationTypes.OrderBy(et => et.Name).Select(u => new RelationTypeDisplayModel { Id = u.Id, Code = u.Code, Name = u.Name });
-            return responseData;
+            var responseData = context.RelationTypes.AsEnumerable();
+            if (withItems)
+            {
+                responseData = responseData.Where(rt => rt.Relations.Any());
+
+            }
+                return responseData.OrderBy(et => et.Name).Select(u => new RelationTypeDisplayModel { Id = u.Id, Code = u.Code, Name = u.Name });
         }
         public static async Task<Utils.Messages.Response> AddRelationTypeAsync(RelationTypeAddEditModel relationTypeModel)
         {
@@ -123,6 +128,12 @@ namespace Quince.Admin.Core.Managers
                 return new RelationTypeAddEditModel() { Id = relationType.Id, Code = relationType.Code, Name = relationType.Name };
             }
             return null;
+        }
+
+        internal static IEnumerable<HomePageRelationTypeDisplayModel> GetHomeRelationTypes(AdminDbContext context=null)
+        {
+            context = context ?? new AdminDbContext();
+            return context.RelationTypes.OrderBy(rt => rt.Name).Where(rt=>rt.Relations.Any()).Select(rt => new HomePageRelationTypeDisplayModel() { Id = rt.Id, Name = rt.Name, Count = rt.Relations.Count() });
         }
     }
 }

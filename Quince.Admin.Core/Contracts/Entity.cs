@@ -32,5 +32,13 @@ namespace Quince.Admin.Core.Contracts
             set { _entityReferences = value; }
             get { if (_entityReferences != null)return _entityReferences; else { _entityReferences = new List<EntityReference>(); return _entityReferences; } }
         }
+
+        private List<EntityAttribute> _entityAttributes;
+        [InverseProperty("Entity")]
+        public virtual List<EntityAttribute> Attributes
+        {
+            set { _entityAttributes = value; }
+            get { if (_entityAttributes != null)return _entityAttributes; else { _entityAttributes = new List<EntityAttribute>(); return _entityAttributes; } }
+        }
     }
 }
