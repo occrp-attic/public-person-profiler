@@ -28,3 +28,4 @@ D:\Personal\Quince\branches\PuPerPro\Quince.Admin.Core\bin\Debug\System.Data.SQL
 D:\Personal\Quince\branches\PuPerPro\Quince.Admin.Core\obj\Debug\Quince.Admin.Core.csprojResolveAssemblyReference.cache
 D:\Personal\Quince\branches\PuPerPro\Quince.Admin.Core\obj\Debug\Quince.Admin.Core.dll
 D:\Personal\Quince\branches\PuPerPro\Quince.Admin.Core\obj\Debug\Quince.Admin.Core.pdb
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin.Core\bin\Debug\Newtonsoft.Json.dll

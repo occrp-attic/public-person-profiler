@@ -1,0 +1,51 @@
+﻿@model Quince.Admin.Core.Models.Search.SearchModel
+@{
+    ViewBag.Title = "Search result for " + Model.Query;
+    Layout = "~/Views/Shared/_PuperLayout.cshtml";
+}
+@using PagedList.Mvc;
+@using PagedList;
+@section Styles{
+    <link href="~/Content/Dashboard/assets/global/css/profile-old.css" rel="stylesheet" />
+}
+@Html.Partial("_SearchBar", Model.Query??string.Empty)
+<h2>Results for <b>"@Model.Query"</b></h2>
+@foreach (var result in ViewBag.OnePageOfResults)
+{
+    <div class="row portfolio-block">
+        <div class="col-md-5">
+            <div class="portfolio-text">
+                <a href="@Url.Action("Details", "Entity", new { Id = result.EntityId })">
+                    @if (!string.IsNullOrEmpty(result.Image))
+                    {
+                        <img src="~/Content/Dashboard/assets/admin/img/@result.Image" class="img-responsive" style="max-height:80px" alt="" />
+                    }
+                    else
+                    {
+                        <img src="~/Content/Dashboard/assets/admin/img/photo.png" class="img-responsive" style="max-height:80px" alt="" />
+
+                    }
+                    <div class="portfolio-text-info">
+                        <h4>@result.Title</h4>
+                        <p>
+                            @result.Type
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-5 portfolio-stat">
+         
+        </div>
+        <div class="col-md-2">
+            <div class="portfolio-btn">
+                <a href="@Url.Action("Details", "Entity", new  {Id=result.EntityId })" class="btn btn-default">
+                    <span>
+                        View
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+}
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfResults, page => Url.Action("Index", "Search", new { page, query = Model.Query }))

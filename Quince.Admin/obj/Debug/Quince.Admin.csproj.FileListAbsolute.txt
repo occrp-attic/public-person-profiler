@@ -122,3 +122,11 @@ D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\Microsoft.Owin.Security.Mi
 D:\Personal\Quince\branches\PuPerPro\Quince.Admin\obj\Debug\Quince.Admin.csprojResolveAssemblyReference.cache
 D:\Personal\Quince\branches\PuPerPro\Quince.Admin\obj\Debug\Quince.Admin.dll
 D:\Personal\Quince\branches\PuPerPro\Quince.Admin\obj\Debug\Quince.Admin.pdb
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\PagedList.dll
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\PagedList.Mvc.dll
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\PagedList.xml
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\PagedList.Mvc.xml
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\Microsoft.AspNet.SignalR.Core.dll
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\Microsoft.AspNet.SignalR.SystemWeb.dll
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\Microsoft.AspNet.SignalR.Core.xml
+D:\Personal\Quince\branches\PuPerPro\Quince.Admin\bin\Microsoft.AspNet.SignalR.SystemWeb.xml
